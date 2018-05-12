@@ -1,15 +1,15 @@
+import os
+
+import numpy as np
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import os
-import numpy as np
-import emph
-from torch.utils.data import DataLoader
+from scipy.io import wavfile
 from torch import optim
 from torch.autograd import Variable
+from torch.utils.data import DataLoader
+
 from data_generator import AudioSampleGenerator
-from scipy.io import wavfile
-from vbnorm import VirtualBatchNorm1d
+from utils import VirtualBatchNorm1d, pre_emphasis, de_emphasis
 
 """
 Here we define the discriminator and generator for SEGAN.
@@ -324,7 +324,7 @@ def split_pair_to_vars(sample_batch_pair):
         noisy_batch_var(Varialbe): noisy signal batch
     """
     # preemphasis
-    sample_batch_pair = emph.pre_emphasis(sample_batch_pair.numpy(), emph_coeff=0.95)
+    sample_batch_pair = pre_emphasis(sample_batch_pair.numpy(), emph_coeff=0.95)
     batch_pairs_var = Variable(torch.from_numpy(sample_batch_pair).type(torch.FloatTensor)).cuda()  # [40 x 2 x 16384]
     clean_batch = np.stack([pair[0].reshape(1, -1) for pair in sample_batch_pair])
     clean_batch_var = Variable(torch.from_numpy(clean_batch).type(torch.FloatTensor)).cuda()
@@ -432,7 +432,7 @@ for epoch in range(86):
         if i == 0:
             fake_speech = generator(fixed_test_noise, z)
             fake_speech_data = fake_speech.data.cpu().numpy()  # convert to numpy array
-            fake_speech_data = emph.de_emphasis(fake_speech_data, emph_coeff=0.95)
+            fake_speech_data = de_emphasis(fake_speech_data, emph_coeff=0.95)
 
             for idx in range(4):  # select four samples
                 generated_sample = fake_speech_data[idx]

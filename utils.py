@@ -1,8 +1,7 @@
+import numpy as np
 import torch
-import torch.nn as nn
-from torch.autograd import Variable
-from torch.nn.parameter import Parameter
 from torch.nn.modules import Module
+from torch.nn.parameter import Parameter
 
 
 class VirtualBatchNorm1d(Module):
@@ -12,7 +11,8 @@ class VirtualBatchNorm1d(Module):
     Implementation borrowed and modified from Rafael_Valle's code + help of SimonW from this discussion thread:
     https://discuss.pytorch.org/t/parameter-grad-of-conv-weight-is-none-after-virtual-batch-normalization/9036
     """
-    def __init__(self, num_features: int, eps: float=1e-5):
+
+    def __init__(self, num_features: int, eps: float = 1e-5):
         super().__init__()
         # batch statistics
         self.num_features = num_features
@@ -85,14 +85,14 @@ class VirtualBatchNorm1d(Module):
         assert len(x.size()) == 3  # specific for 1d VBN
         if mean.size(1) != self.num_features:
             raise Exception(
-                    'Mean size not equal to number of featuers : given {}, expected {}'
+                'Mean size not equal to number of featuers : given {}, expected {}'
                     .format(mean.size(1), self.num_features))
         if mean_sq.size(1) != self.num_features:
             raise Exception(
-                    'Squared mean tensor size not equal to number of features : given {}, expected {}'
+                'Squared mean tensor size not equal to number of features : given {}, expected {}'
                     .format(mean_sq.size(1), self.num_features))
 
-        std = torch.sqrt(self.eps + mean_sq - mean**2)
+        std = torch.sqrt(self.eps + mean_sq - mean ** 2)
         x = x - mean
         x = x / std
         x = x * self.gamma
@@ -102,3 +102,42 @@ class VirtualBatchNorm1d(Module):
     def __repr__(self):
         return ('{name}(num_features={num_features}, eps={eps}'
                 .format(name=self.__class__.__name__, **self.__dict__))
+
+
+def pre_emphasis(signal_batch, emph_coeff=0.95):
+    """
+    Pre-emphasis of higher frequencies given a batch of signal.
+
+    Args:
+        signal_batch: batch of signals, represented as numpy arrays
+        emph_coeff: emphasis coefficient
+
+    Returns:
+        result: pre-emphasized signal batch
+    """
+    result = np.zeros(signal_batch.shape)
+    for sample_idx, sample in enumerate(signal_batch):
+        for ch, channel_data in enumerate(sample):
+            result[sample_idx][ch] = np.append(
+                channel_data[0], channel_data[1:] - emph_coeff * channel_data[:-1])
+    return result
+
+
+def de_emphasis(signal_batch, emph_coeff=0.95):
+    """
+    Deemphasis operation given a batch of signal.
+    Reverts the pre-emphasized signal.
+
+    Args:
+        signal_batch: batch of signals, represented as numpy arrays
+        emph_coeff: emphasis coefficient
+
+    Returns:
+        result: de-emphasized signal batch
+    """
+    result = np.zeros(signal_batch.shape)
+    for sample_idx, sample in enumerate(signal_batch):
+        for ch, channel_data in enumerate(sample):
+            result[sample_idx][ch] = np.append(
+                channel_data[0], channel_data[1:] + emph_coeff * channel_data[:-1])
+    return result
