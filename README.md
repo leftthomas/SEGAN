@@ -1,5 +1,5 @@
-# Pytorch Implementation of SEGAN (Speech Enhancement GAN)
-Implementation of [SEGAN](https://arxiv.org/abs/1703.09452) by Pascual et al. in 2017, using pytorch.
+# SEGAN
+A PyTorch implementation of SEGAN based on paper [SEGAN: Speech Enhancement Generative Adversarial Network](https://arxiv.org/abs/1703.09452).
 
 ## Requirements
 * [Anaconda](https://www.anaconda.com/download/)
@@ -7,26 +7,14 @@ Implementation of [SEGAN](https://arxiv.org/abs/1703.09452) by Pascual et al. in
 ```
 conda install pytorch torchvision -c pytorch
 ```
-* PyTorchNet
+* librosa
 ```
-pip install git+https://github.com/pytorch/tnt.git@master
-```
-* capsule-layer
-```
-pip install git+https://github.com/leftthomas/CapsuleLayer.git@master
-```
-* tqdm
-```
-conda install tqdm
+pip install librosa
 ```
 * sox
 ```
 brew install sox         ---- MacOS
 sudo apt-get install sox ---- Ubuntu
-```
-* librosa
-```
-pip install librosa
 ```
 
 ## Data Preprocessing
