@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+from torch.autograd import Variable
 from torch.nn.modules import Module
 from torch.nn.parameter import Parameter
 
@@ -141,3 +142,30 @@ def de_emphasis(signal_batch, emph_coeff=0.95):
             result[sample_idx][ch] = np.append(
                 channel_data[0], channel_data[1:] + emph_coeff * channel_data[:-1])
     return result
+
+
+def split_pair_to_vars(sample_batch_pair):
+    """
+    Splits the generated batch data and creates combination of pairs.
+    Input argument sample_batch_pair consists of a batch_size number of
+    [clean_signal, noisy_signal] pairs.
+
+    This function creates three pytorch Variables - a clean_signal, noisy_signal pair,
+    clean signal only, and noisy signal only.
+    It goes through preemphasis preprocessing before converted into variable.
+
+    Args:
+        sample_batch_pair(torch.Tensor): batch of [clean_signal, noisy_signal] pairs
+    Returns:
+        batch_pairs_var(Variable): batch of pairs containing clean signal and noisy signal
+        clean_batch_var(Variable): clean signal batch
+        noisy_batch_var(Varialbe): noisy signal batch
+    """
+    # preemphasis
+    sample_batch_pair = pre_emphasis(sample_batch_pair.numpy(), emph_coeff=0.95)
+    batch_pairs_var = Variable(torch.from_numpy(sample_batch_pair).type(torch.FloatTensor)).cuda()  # [40 x 2 x 16384]
+    clean_batch = np.stack([pair[0].reshape(1, -1) for pair in sample_batch_pair])
+    clean_batch_var = Variable(torch.from_numpy(clean_batch).type(torch.FloatTensor)).cuda()
+    noisy_batch = np.stack([pair[1].reshape(1, -1) for pair in sample_batch_pair])
+    noisy_batch_var = Variable(torch.from_numpy(noisy_batch).type(torch.FloatTensor)).cuda()
+    return batch_pairs_var, clean_batch_var, noisy_batch_var
