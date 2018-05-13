@@ -20,9 +20,15 @@ conda install tqdm
 The clear and noisy speech datasets are downloaded from [DataShare](https://datashare.is.ed.ac.uk/handle/10283/2791).
 Download the `56kHZ` train datasets and test datasets then extract them into `data` directory.
 
+If you want using other datasets, you should change the path of data defined on `data_preprocess.py`.
+
 ## Usage
-### Data Preprocess
+### Data Pre-process
 `python data_preprocess.py`
 
-### Train
+The pre-processed datas are on `data/serialized_train_data` and `data/serialized_test_data`.
+
+### Train Model and Test
 `python main.py`
+
+The test results are on `results`.
