@@ -37,3 +37,12 @@ optional arguments:
 --num_epochs             train epochs number [default value is 86]
 ```
 The test results are on `results`.
+
+### Test Audio
+```
+python test_audio.py ----file_name p232_160.wav --epoch_name generator-80.pkl
+optional arguments:
+--file_name              audio file name
+--epoch_name             generator epoch name
+```
+The generated enhanced audio are on the same directory of input audio.
