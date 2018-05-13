@@ -73,27 +73,22 @@ class AudioDataset(data.Dataset):
 
         Returns:
             ref_batch: reference batch
-            ref_clear: reference clear
-            ref_noisy: reference noisy
         """
         ref_file_names = np.random.choice(self.file_names, batch_size)
         ref_batch = np.stack([np.load(f) for f in ref_file_names])
 
         ref_batch = pre_emphasis(ref_batch, emph_coeff=0.95)
-        clean_batch = np.stack([pair[0].reshape(1, -1) for pair in ref_batch])
-        noisy_batch = np.stack([pair[1].reshape(1, -1) for pair in ref_batch])
-        return torch.from_numpy(ref_batch), torch.from_numpy(clean_batch), torch.from_numpy(noisy_batch)
+        return torch.from_numpy(ref_batch)
 
     def __getitem__(self, idx):
         pair_batch = np.load(self.file_names[idx])
-        pair_batch = pre_emphasis(pair_batch, emph_coeff=0.95)
-        clean_batch = np.stack([pair[0].reshape(1, -1) for pair in pair_batch])
+        pair_batch = pre_emphasis(pair_batch[np.newaxis, :, :], emph_coeff=0.95)
         noisy_batch = np.stack([pair[1].reshape(1, -1) for pair in pair_batch])
         if self.data_type == 'train':
+            clean_batch = np.stack([pair[0].reshape(1, -1) for pair in pair_batch])
             return torch.from_numpy(pair_batch), torch.from_numpy(clean_batch), torch.from_numpy(noisy_batch)
         else:
-            return os.path.basename(self.file_names[idx]), torch.from_numpy(pair_batch), torch.from_numpy(
-                clean_batch), torch.from_numpy(noisy_batch)
+            return os.path.basename(self.file_names[idx]), torch.from_numpy(noisy_batch)
 
     def __len__(self):
         return len(self.file_names)

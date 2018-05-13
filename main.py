@@ -28,7 +28,7 @@ if __name__ == '__main__':
     train_data_loader = DataLoader(dataset=train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
     test_data_loader = DataLoader(dataset=test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=4)
     # generate reference batch
-    ref_batch, _, _ = train_dataset.reference_batch(BATCH_SIZE)
+    ref_batch = train_dataset.reference_batch(BATCH_SIZE)
 
     # create D and G instances
     discriminator = Discriminator()
@@ -37,6 +37,8 @@ if __name__ == '__main__':
         discriminator.cuda()
         generator.cuda()
         ref_batch = ref_batch.cuda()
+    print("# generator parameters:", sum(param.numel() for param in generator.parameters()))
+    print("# discriminator parameters:", sum(param.numel() for param in discriminator.parameters()))
     # optimizers
     g_optimizer = optim.RMSprop(generator.parameters(), lr=0.0001)
     d_optimizer = optim.RMSprop(discriminator.parameters(), lr=0.0001)
@@ -92,7 +94,7 @@ if __name__ == '__main__':
 
         # TEST model
         test_bar = tqdm(test_data_loader, desc='Test model and save generated audios')
-        for test_file_names, _, _, test_noisy in test_bar:
+        for test_file_names, test_noisy in test_bar:
             if torch.cuda.is_available():
                 test_noisy = test_noisy.cuda()
             test_noisy = Variable(test_noisy)
