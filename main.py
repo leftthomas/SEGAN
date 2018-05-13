@@ -7,9 +7,8 @@ from torch import optim
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
 
-from data_generator import AudioSampleGenerator
 from model import Generator, Discriminator
-from utils import de_emphasis, split_pair_to_vars
+from utils import de_emphasis, split_pair_to_vars, AudioSampleGenerator
 
 """
 Here we define the discriminator and generator for SEGAN.
