@@ -23,6 +23,7 @@ if __name__ == '__main__':
     NUM_EPOCHS = opt.num_epochs
 
     # load data
+    print('loading data...')
     train_dataset = AudioDataset(data_type='train')
     test_dataset = AudioDataset(data_type='test')
     train_data_loader = DataLoader(dataset=train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)

@@ -81,15 +81,15 @@ class AudioDataset(data.Dataset):
         return torch.from_numpy(ref_batch).type(torch.FloatTensor)
 
     def __getitem__(self, idx):
-        pair_batch = np.load(self.file_names[idx])
-        pair_batch = pre_emphasis(pair_batch[np.newaxis, :, :], emph_coeff=0.95)
-        noisy_batch = np.stack([pair[1].reshape(1, -1) for pair in pair_batch])
+        pair = np.load(self.file_names[idx])
+        pair = pre_emphasis(pair[np.newaxis, :, :], emph_coeff=0.95).reshape(2, -1)
+        noisy = pair[1].reshape(1, -1)
         if self.data_type == 'train':
-            clean_batch = np.stack([pair[0].reshape(1, -1) for pair in pair_batch])
-            return torch.from_numpy(pair_batch).type(torch.FloatTensor), torch.from_numpy(clean_batch).type(
-                torch.FloatTensor), torch.from_numpy(noisy_batch).type(torch.FloatTensor)
+            clean = pair[0].reshape(1, -1)
+            return torch.from_numpy(pair).type(torch.FloatTensor), torch.from_numpy(clean).type(
+                torch.FloatTensor), torch.from_numpy(noisy).type(torch.FloatTensor)
         else:
-            return os.path.basename(self.file_names[idx]), torch.from_numpy(noisy_batch).type(torch.FloatTensor)
+            return os.path.basename(self.file_names[idx]), torch.from_numpy(noisy).type(torch.FloatTensor)
 
     def __len__(self):
         return len(self.file_names)
