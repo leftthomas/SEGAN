@@ -6,49 +6,41 @@ from scipy.io import wavfile
 from torch import optim
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 
 from model import Generator, Discriminator
 from utils import de_emphasis, split_pair_to_vars, AudioDataset
 
-clean_train_folder = 'data/clean_trainset_56spk_wav'
-noisy_train_folder = 'data/noisy_trainset_56spk_wav'
 serialized_data_folder = 'data/serialized_data'
 batch_size = 50
-d_learning_rate = 0.0001
-g_learning_rate = 0.0001
 g_lambda = 100  # regularize for generator
 sample_rate = 16000
 
 if __name__ == '__main__':
-    # create D and G instances
-    discriminator = Discriminator()
-    generator = Generator()
-
-    if torch.cuda.is_available():
-        discriminator.cuda()
-        generator.cuda()
 
     # load data
     audio_dataset = AudioDataset(serialized_data_folder)
-    random_data_loader = DataLoader(dataset=audio_dataset, batch_size=batch_size, shuffle=True, num_workers=4,
-                                    drop_last=True, pin_memory=True)
-
+    data_loader = DataLoader(dataset=audio_dataset, batch_size=batch_size, shuffle=True, num_workers=4, drop_last=True,
+                             pin_memory=True)
     # generate reference batch
     ref_batch_pairs = audio_dataset.reference_batch(batch_size)
     ref_batch_var, ref_clean_var, ref_noisy_var = split_pair_to_vars(ref_batch_pairs)
-
     # test samples for generation
     test_noise_filenames, fixed_test_noise = audio_dataset.fixed_test_audio(batch_size)
     fixed_test_noise = Variable(torch.from_numpy(fixed_test_noise)).cuda()
-    print('Test samples loaded')
 
+    # create D and G instances
+    discriminator = Discriminator()
+    generator = Generator()
+    if torch.cuda.is_available():
+        discriminator.cuda()
+        generator.cuda()
     # optimizers
-    g_optimizer = optim.RMSprop(generator.parameters(), lr=g_learning_rate)
-    d_optimizer = optim.RMSprop(discriminator.parameters(), lr=d_learning_rate)
+    g_optimizer = optim.RMSprop(generator.parameters(), lr=0.0001)
+    d_optimizer = optim.RMSprop(discriminator.parameters(), lr=0.0001)
 
-    print('Starting Training...')
-    for epoch in range(86):
-        for i, sample_batch_pairs in enumerate(random_data_loader):
+    for epoch in tqdm(range(86), desc='Train model'):
+        for i, sample_batch_pairs in enumerate(data_loader):
             # using the sample batch pair, split into
             # batch of combined pairs, clean signals, and noisy signals
             batch_pairs_var, clean_batch_var, noisy_batch_var = split_pair_to_vars(sample_batch_pairs)
@@ -108,13 +100,11 @@ if __name__ == '__main__':
 
                 for idx in range(4):  # select four samples
                     generated_sample = fake_speech_data[idx]
-                    filepath = os.path.join(
-                        gen_data_path, '{}_e{}.wav'.format(test_noise_filenames[idx], epoch + 1))
+                    filepath = os.path.join('results', '{}_e{}.wav'.format(test_noise_filenames[idx], epoch + 1))
                     wavfile.write(filepath, sample_rate, generated_sample.T)
 
         # save the model parameters for each epoch
-        g_path = os.path.join(models_path, 'generator-{}.pkl'.format(epoch + 1))
-        d_path = os.path.join(models_path, 'discriminator-{}.pkl'.format(epoch + 1))
+        g_path = os.path.join('epochs', 'generator-{}.pkl'.format(epoch + 1))
+        d_path = os.path.join('epochs', 'discriminator-{}.pkl'.format(epoch + 1))
         torch.save(generator.state_dict(), g_path)
         torch.save(discriminator.state_dict(), d_path)
-    print('Finished Training!')
