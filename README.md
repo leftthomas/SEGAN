@@ -11,6 +11,10 @@ conda install pytorch torchvision -c pytorch
 ```
 pip install librosa
 ```
+* tqdm
+```
+conda install tqdm
+```
 * sox
 ```
 brew install sox         ---- MacOS
