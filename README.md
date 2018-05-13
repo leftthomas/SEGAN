@@ -45,4 +45,4 @@ optional arguments:
 --file_name              audio file name
 --epoch_name             generator epoch name
 ```
-The generated enhanced audio are on the same directory of input audio.
+The generated enhanced audio is on the same directory of input audio.
