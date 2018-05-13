@@ -25,12 +25,10 @@ if __name__ == '__main__':
     # load data
     train_dataset = AudioDataset(data_type='train')
     test_dataset = AudioDataset(data_type='test')
-    train_data_loader = DataLoader(dataset=train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4,
-                                   drop_last=True, pin_memory=True)
-    test_data_loader = DataLoader(dataset=test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=4,
-                                  drop_last=False, pin_memory=True)
+    train_data_loader = DataLoader(dataset=train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
+    test_data_loader = DataLoader(dataset=test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=4)
     # generate reference batch
-    ref_batch, ref_clean, ref_noisy = train_dataset.reference_batch(BATCH_SIZE)
+    ref_batch, _, _ = train_dataset.reference_batch(BATCH_SIZE)
 
     # create D and G instances
     discriminator = Discriminator()
@@ -38,7 +36,7 @@ if __name__ == '__main__':
     if torch.cuda.is_available():
         discriminator.cuda()
         generator.cuda()
-        ref_batch, ref_clean, ref_noisy = ref_batch.cuda(), ref_clean.cuda(), ref_noisy.cuda()
+        ref_batch = ref_batch.cuda()
     # optimizers
     g_optimizer = optim.RMSprop(generator.parameters(), lr=0.0001)
     d_optimizer = optim.RMSprop(discriminator.parameters(), lr=0.0001)
@@ -53,7 +51,7 @@ if __name__ == '__main__':
                 train_batch, train_clean, train_noisy = train_batch.cuda(), train_clean.cuda(), train_noisy.cuda()
                 z = z.cuda()
             train_batch, train_clean, train_noisy = Variable(train_batch), Variable(train_clean), Variable(train_noisy)
-            ref_batch, ref_clean, ref_noisy = Variable(ref_batch), Variable(ref_clean), Variable(ref_noisy)
+            ref_batch = Variable(ref_batch)
             z = Variable(z)
 
             # TRAIN D to recognize clean audio as clean
@@ -94,10 +92,10 @@ if __name__ == '__main__':
 
         # TEST model
         test_bar = tqdm(test_data_loader, desc='Test model and save generated audios')
-        for test_file_names, test_batch, test_clean, test_noisy in test_bar:
+        for test_file_names, _, _, test_noisy in test_bar:
             if torch.cuda.is_available():
-                test_batch, test_clean, test_noisy = test_batch.cuda(), test_clean.cuda(), test_noisy.cuda()
-            test_batch, test_clean, test_noisy = Variable(test_batch), Variable(test_clean), Variable(test_noisy)
+                test_noisy = test_noisy.cuda()
+            test_noisy = Variable(test_noisy)
             fake_speech = generator(test_noisy, z).data.cpu().numpy()  # convert to numpy array
             fake_speech = de_emphasis(fake_speech, emph_coeff=0.95)
 
