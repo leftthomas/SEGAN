@@ -4,8 +4,8 @@ import librosa
 import numpy as np
 from tqdm import tqdm
 
-original_clean_train_folder = 'data/clean_trainset_56spk_wav'
-original_noisy_train_folder = 'data/noisy_trainset_56spk_wav'
+clean_train_folder = 'data/clean_trainset_56spk_wav'
+noisy_train_folder = 'data/noisy_trainset_56spk_wav'
 serialized_data_folder = 'data/serialized_data'
 
 
@@ -36,12 +36,12 @@ def process_and_serialize():
         os.makedirs(serialized_data_folder)
 
     # walk through the path, slice the audio file, and save the serialized result
-    for root, dirs, files in os.walk(original_clean_train_folder):
+    for root, dirs, files in os.walk(clean_train_folder):
         if len(files) == 0:
             continue
         for filename in tqdm(files, desc='Serialize and down-sample audios'):
-            clean_file = os.path.join(original_clean_train_folder, filename)
-            noisy_file = os.path.join(original_noisy_train_folder, filename)
+            clean_file = os.path.join(clean_train_folder, filename)
+            noisy_file = os.path.join(noisy_train_folder, filename)
             # slice both clean signal and noisy signal
             clean_sliced = slice_signal(clean_file, window_size, stride, sample_rate)
             noisy_sliced = slice_signal(noisy_file, window_size, stride, sample_rate)
