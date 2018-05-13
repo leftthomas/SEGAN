@@ -15,11 +15,6 @@ pip install librosa
 ```
 conda install tqdm
 ```
-* sox
-```
-brew install sox         ---- MacOS
-sudo apt-get install sox ---- Ubuntu
-```
 
 ## Datasets
 The clear and noisy speech datasets are downloaded from [DataShare](https://datashare.is.ed.ac.uk/handle/10283/2791).
