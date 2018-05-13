@@ -10,6 +10,8 @@ clean_test_folder = 'data/clean_testset_wav'
 noisy_test_folder = 'data/noisy_testset_wav'
 serialized_train_folder = 'data/serialized_train_data'
 serialized_test_folder = 'data/serialized_test_data'
+window_size = 2 ** 14  # about 1 second of samples
+sample_rate = 16000
 
 
 def slice_signal(file, window_size, stride, sample_rate):
@@ -31,8 +33,6 @@ def process_and_serialize(data_type):
     """
     Serialize, down-sample the sliced signals and save on separate folder.
     """
-    window_size = 2 ** 14  # about 1 second of samples
-    sample_rate = 16000
     stride = 0.5
 
     if data_type == 'train':
@@ -75,8 +75,8 @@ def data_verify(data_type):
     for root, dirs, files in os.walk(serialized_folder):
         for filename in tqdm(files, desc='Verify serialized {} audios'.format(data_type)):
             data_pair = np.load(os.path.join(root, filename))
-            if data_pair.shape[1] != 16384:
-                print('Snippet length not 16384 : {} instead'.format(data_pair.shape[1]))
+            if data_pair.shape[1] != window_size:
+                print('Snippet length not {} : {} instead'.format(window_size, data_pair.shape[1]))
                 break
 
 
