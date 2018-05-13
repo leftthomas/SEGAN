@@ -90,7 +90,7 @@ if __name__ == '__main__':
             g_optimizer.step()
 
             train_bar.set_description(
-                'Epoch {}: d_clean_loss {}, d_noisy_loss {:.4f}, g_loss {:.4f}, g_conditional_loss {:.4f}'
+                'Epoch {}: d_clean_loss {:.4f}, d_noisy_loss {:.4f}, g_loss {:.4f}, g_conditional_loss {:.4f}'
                     .format(epoch + 1, clean_loss.data[0], noisy_loss.data[0], g_loss.data[0], g_cond_loss.data[0]))
 
         # TEST model
