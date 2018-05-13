@@ -92,9 +92,8 @@ class AudioDataset(data.Dataset):
         if self.data_type == 'train':
             return torch.from_numpy(pair_batch), torch.from_numpy(clean_batch), torch.from_numpy(noisy_batch)
         else:
-            return self.file_names[idx], torch.from_numpy(pair_batch), torch.from_numpy(clean_batch), torch.from_numpy(
-                noisy_batch)
+            return os.path.basename(self.file_names[idx]), torch.from_numpy(pair_batch), torch.from_numpy(
+                clean_batch), torch.from_numpy(noisy_batch)
 
     def __len__(self):
         return len(self.file_names)
-

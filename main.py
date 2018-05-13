@@ -103,7 +103,7 @@ if __name__ == '__main__':
 
             for idx in range(fake_speech.shape[0]):
                 generated_sample = fake_speech[idx]
-                file_name = os.path.join('results', '{}_e{}.wav'.format(test_file_names[idx], epoch + 1))
+                file_name = os.path.join('results', '{}_e{}.wav'.format(test_file_names[idx].split('.')[0], epoch + 1))
                 wavfile.write(file_name, sample_rate, generated_sample.T)
 
         # save the model parameters for each epoch
