@@ -38,6 +38,7 @@ if __name__ == '__main__':
         discriminator.cuda()
         generator.cuda()
         ref_batch = ref_batch.cuda()
+    ref_batch = Variable(ref_batch)
     print("# generator parameters:", sum(param.numel() for param in generator.parameters()))
     print("# discriminator parameters:", sum(param.numel() for param in discriminator.parameters()))
     # optimizers
@@ -54,7 +55,6 @@ if __name__ == '__main__':
                 train_batch, train_clean, train_noisy = train_batch.cuda(), train_clean.cuda(), train_noisy.cuda()
                 z = z.cuda()
             train_batch, train_clean, train_noisy = Variable(train_batch), Variable(train_clean), Variable(train_noisy)
-            ref_batch = Variable(ref_batch)
             z = Variable(z)
 
             # TRAIN D to recognize clean audio as clean
@@ -89,9 +89,9 @@ if __name__ == '__main__':
             g_loss.backward()
             g_optimizer.step()
 
-            train_bar.set_description('Epoch {}: d_clean_loss {}, d_noisy_loss {}, g_loss {}, g_conditional_loss {}'
-                                      .format(epoch + 1, clean_loss.data[0], noisy_loss.data[0],
-                                              g_loss.data[0], g_cond_loss.data[0]))
+            train_bar.set_description(
+                'Epoch {}: d_clean_loss {}, d_noisy_loss {:.4f}, g_loss {:.4f}, g_conditional_loss {:.4f}'
+                    .format(epoch + 1, clean_loss.data[0], noisy_loss.data[0], g_loss.data[0], g_cond_loss.data[0]))
 
         # TEST model
         test_bar = tqdm(test_data_loader, desc='Test model and save generated audios')
