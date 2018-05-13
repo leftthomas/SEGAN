@@ -24,11 +24,16 @@ If you want using other datasets, you should change the path of data defined on 
 
 ## Usage
 ### Data Pre-process
-`python data_preprocess.py`
-
+```
+python data_preprocess.py
+```
 The pre-processed datas are on `data/serialized_train_data` and `data/serialized_test_data`.
 
 ### Train Model and Test
-`python main.py`
-
+```
+python main.py ----batch_size 128 --num_epochs 300
+optional arguments:
+--batch_size             train batch size [default value is 50]
+--num_epochs             train epochs number [default value is 86]
+```
 The test results are on `results`.
