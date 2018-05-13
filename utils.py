@@ -78,7 +78,7 @@ class AudioDataset(data.Dataset):
         ref_batch = np.stack([np.load(f) for f in ref_file_names])
 
         ref_batch = pre_emphasis(ref_batch, emph_coeff=0.95)
-        return torch.from_numpy(ref_batch)
+        return torch.from_numpy(ref_batch).type(torch.FloatTensor)
 
     def __getitem__(self, idx):
         pair_batch = np.load(self.file_names[idx])
@@ -86,9 +86,10 @@ class AudioDataset(data.Dataset):
         noisy_batch = np.stack([pair[1].reshape(1, -1) for pair in pair_batch])
         if self.data_type == 'train':
             clean_batch = np.stack([pair[0].reshape(1, -1) for pair in pair_batch])
-            return torch.from_numpy(pair_batch), torch.from_numpy(clean_batch), torch.from_numpy(noisy_batch)
+            return torch.from_numpy(pair_batch).type(torch.FloatTensor), torch.from_numpy(clean_batch).type(
+                torch.FloatTensor), torch.from_numpy(noisy_batch).type(torch.FloatTensor)
         else:
-            return os.path.basename(self.file_names[idx]), torch.from_numpy(noisy_batch)
+            return os.path.basename(self.file_names[idx]), torch.from_numpy(noisy_batch).type(torch.FloatTensor)
 
     def __len__(self):
         return len(self.file_names)
