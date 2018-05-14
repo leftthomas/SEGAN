@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 from data_preprocess import sample_rate
 from model import Generator, Discriminator
-from utils import de_emphasis, AudioDataset
+from utils import AudioDataset, emphasis
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train Audio Enhancement')
@@ -101,7 +101,7 @@ if __name__ == '__main__':
                 test_noisy, z = test_noisy.cuda(), z.cuda()
             test_noisy, z = Variable(test_noisy), Variable(z)
             fake_speech = generator(test_noisy, z).data.cpu().numpy()  # convert to numpy array
-            fake_speech = de_emphasis(fake_speech, emph_coeff=0.95)
+            fake_speech = emphasis(fake_speech, emph_coeff=0.95, pre=False)
 
             for idx in range(fake_speech.shape[0]):
                 generated_sample = fake_speech[idx]

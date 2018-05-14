@@ -7,42 +7,25 @@ from torch.utils import data
 from data_preprocess import serialized_test_folder, serialized_train_folder
 
 
-def pre_emphasis(signal_batch, emph_coeff=0.95):
+def emphasis(signal_batch, emph_coeff=0.95, pre=True):
     """
-    Pre-emphasis of higher frequencies given a batch of signal.
+    Pre-emphasis or De-emphasis of higher frequencies given a batch of signal.
 
     Args:
         signal_batch: batch of signals, represented as numpy arrays
         emph_coeff: emphasis coefficient
+        pre: pre-emphasis or de-emphasis signals
 
     Returns:
-        result: pre-emphasized signal batch
+        result: pre-emphasized or de-emphasized signal batch
     """
     result = np.zeros(signal_batch.shape)
     for sample_idx, sample in enumerate(signal_batch):
         for ch, channel_data in enumerate(sample):
-            result[sample_idx][ch] = np.append(
-                channel_data[0], channel_data[1:] - emph_coeff * channel_data[:-1])
-    return result
-
-
-def de_emphasis(signal_batch, emph_coeff=0.95):
-    """
-    De-emphasis operation given a batch of signal.
-    Reverts the pre-emphasized signal.
-
-    Args:
-        signal_batch: batch of signals, represented as numpy arrays
-        emph_coeff: emphasis coefficient
-
-    Returns:
-        result: de-emphasized signal batch
-    """
-    result = np.zeros(signal_batch.shape)
-    for sample_idx, sample in enumerate(signal_batch):
-        for ch, channel_data in enumerate(sample):
-            result[sample_idx][ch] = np.append(
-                channel_data[0], channel_data[1:] + emph_coeff * channel_data[:-1])
+            if pre:
+                result[sample_idx][ch] = np.append(channel_data[0], channel_data[1:] - emph_coeff * channel_data[:-1])
+            else:
+                result[sample_idx][ch] = np.append(channel_data[0], channel_data[1:] + emph_coeff * channel_data[:-1])
     return result
 
 
@@ -77,12 +60,12 @@ class AudioDataset(data.Dataset):
         ref_file_names = np.random.choice(self.file_names, batch_size)
         ref_batch = np.stack([np.load(f) for f in ref_file_names])
 
-        ref_batch = pre_emphasis(ref_batch, emph_coeff=0.95)
+        ref_batch = emphasis(ref_batch, emph_coeff=0.95)
         return torch.from_numpy(ref_batch).type(torch.FloatTensor)
 
     def __getitem__(self, idx):
         pair = np.load(self.file_names[idx])
-        pair = pre_emphasis(pair[np.newaxis, :, :], emph_coeff=0.95).reshape(2, -1)
+        pair = emphasis(pair[np.newaxis, :, :], emph_coeff=0.95).reshape(2, -1)
         noisy = pair[1].reshape(1, -1)
         if self.data_type == 'train':
             clean = pair[0].reshape(1, -1)
