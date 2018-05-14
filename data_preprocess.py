@@ -17,7 +17,7 @@ sample_rate = 16000
 def slice_signal(file, window_size, stride, sample_rate):
     """
     Helper function for slicing the audio file
-    by window size and sample rate with [stride] percent overlap (default 50%).
+    by window size and sample rate with [1-stride] percent overlap (default 50%).
     """
     wav, sr = librosa.load(file, sr=sample_rate)
     hop = int(window_size * stride)

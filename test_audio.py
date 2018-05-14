@@ -21,11 +21,11 @@ if __name__ == '__main__':
     EPOCH_NAME = opt.epoch_name
 
     generator = Generator()
-    generator.load_state_dict(torch.load(EPOCH_NAME, map_location='cpu'))
+    generator.load_state_dict(torch.load('epochs/' + EPOCH_NAME, map_location='cpu'))
     if torch.cuda.is_available():
         generator.cuda()
 
-    noisy_slices = slice_signal(FILE_NAME, window_size, 0, sample_rate)
+    noisy_slices = slice_signal(FILE_NAME, window_size, 1, sample_rate)
     enhanced_speech = []
     for noisy_slice in noisy_slices:
         z = nn.init.normal(torch.Tensor(1, 1024, 8))
