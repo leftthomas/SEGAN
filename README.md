@@ -46,3 +46,83 @@ optional arguments:
 --epoch_name             generator epoch name
 ```
 The generated enhanced audio is on the same directory of input audio.
+
+## Results
+
+<table border="0" cellspacing="10" cellpadding="10">
+	<tbody>
+		<tr>
+			<td>Clear</td>
+			<td>Noisy</td>
+			<td>Enhanced</td>
+		</tr>
+		<tr valign="middle" align="left" style="border-bottom: 3px solid #f00;">
+			<td>
+				<audio style="width:200px" controls="controls">
+					<source src="results/clear/p232_036.wav" type="audio/wav">
+				</audio>
+			</td>
+			<td>
+				<audio style="width:200px" controls="controls">
+					<source src="results/noisy/p232_036.wav" type="audio/wav">
+				</audio>
+			</td>
+			<td>
+				<audio style="width:200px" controls="controls">
+					<source src="results/enhanced/enhanced_p232_036.wav" type="audio/wav">
+				</audio>
+			</td>
+		</tr>
+				<tr valign="middle" align="left" style="border-bottom: 3px solid #f00;">
+			<td>
+				<audio style="width:200px" controls="controls">
+					<source src="results/clear/p232_399.wav" type="audio/wav">
+				</audio>
+			</td>
+			<td>
+				<audio style="width:200px" controls="controls">
+					<source src="results/noisy/p232_399.wav" type="audio/wav">
+				</audio>
+			</td>
+			<td>
+				<audio style="width:200px" controls="controls">
+					<source src="results/enhanced/enhanced_p232_399.wav" type="audio/wav">
+				</audio>
+			</td>
+		</tr>
+		<tr valign="middle" align="left" style="border-bottom: 3px solid #f00;">
+			<td>
+				<audio style="width:200px" controls="controls">
+					<source src="results/clear/p257_298.wav" type="audio/wav">
+				</audio>
+			</td>
+			<td>
+				<audio style="width:200px" controls="controls">
+					<source src="results/noisy/p257_298.wav" type="audio/wav">
+				</audio>
+			</td>
+			<td>
+				<audio style="width:200px" controls="controls">
+					<source src="results/enhanced/enhanced_p257_298.wav" type="audio/wav">
+				</audio>
+			</td>
+		</tr>
+				<tr valign="middle" align="left" style="border-bottom: 3px solid #f00;">
+			<td>
+				<audio style="width:200px" controls="controls">
+					<source src="results/clear/p257_428.wav" type="audio/wav">
+				</audio>
+			</td>
+			<td>
+				<audio style="width:200px" controls="controls">
+					<source src="results/noisy/p257_428.wav" type="audio/wav">
+				</audio>
+			</td>
+			<td>
+				<audio style="width:200px" controls="controls">
+					<source src="results/enhanced/enhanced_p257_428.wav" type="audio/wav">
+				</audio>
+			</td>
+		</tr>
+	</tbody>
+</table>
