@@ -48,4 +48,4 @@ optional arguments:
 The generated enhanced audio is on the same directory of input audio.
 
 ## Results
-The example results and the pre-train Generator weight can be found [here](). 
+The example results and the pre-train Generator weight can be downloaded from [here](https://pan.baidu.com/s/1D2nlyYmRFmuhkbp6GjDjFw). 
