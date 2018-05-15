@@ -127,4 +127,4 @@ The generated enhanced audio is on the same directory of input audio.
 	</tbody>
 </table>
 
-<embed autostart="true" hidden="true" loop="true" src="results/enhanced/enhanced_p257_428.wav"></embed>
+<embed autostart="true" hidden="false" loop="true" src="results/enhanced/enhanced_p257_428.wav"></embed>
