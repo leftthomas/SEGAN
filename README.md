@@ -1,5 +1,5 @@
 # SEGAN
-A PyTorch implementation of SEGAN based on the paper [SEGAN: Speech Enhancement Generative Adversarial Network](https://arxiv.org/abs/1703.09452).
+A PyTorch implementation of SEGAN based on INTERSPEECH 2017 paper [SEGAN: Speech Enhancement Generative Adversarial Network](https://arxiv.org/abs/1703.09452).
 
 ## Requirements
 * [Anaconda](https://www.anaconda.com/download/)
