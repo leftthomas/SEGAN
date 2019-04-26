@@ -11,10 +11,6 @@ conda install pytorch torchvision -c pytorch
 ```
 pip install librosa
 ```
-* tqdm
-```
-conda install tqdm
-```
 
 ## Datasets
 The clear and noisy speech datasets are downloaded from [DataShare](https://datashare.is.ed.ac.uk/handle/10283/2791).
