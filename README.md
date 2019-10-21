@@ -27,7 +27,7 @@ The pre-processed datas are on `data/serialized_train_data` and `data/serialized
 
 ### Train Model and Test
 ```
-python main.py ----batch_size 128 --num_epochs 300
+python main.py --batch_size 128 --num_epochs 300
 optional arguments:
 --batch_size             train batch size [default value is 50]
 --num_epochs             train epochs number [default value is 86]
