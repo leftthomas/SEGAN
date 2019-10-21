@@ -18,7 +18,7 @@ class VirtualBatchNorm1d(Module):
         self.num_features = num_features
         self.eps = eps  # epsilon
         # define gamma and beta parameters
-        self.gamma = Parameter(torch.normal(means=torch.ones(1, num_features, 1), std=0.02))
+        self.gamma = Parameter(torch.normal(mean=1.0, std=0.02, size=(1, num_features, 1)))
         self.beta = Parameter(torch.zeros(1, num_features, 1))
 
     def get_stats(self, x):
